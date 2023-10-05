@@ -1,0 +1,80 @@
+
+===========================================Reset==========================================
+Dim iRow As Long
+ 
+ iRow = [Counta(Database !A:A)]
+ 
+ With frmForm
+ 
+    .txtempname.Value = ""
+    .txtempid.Value = ""
+    
+    .ListBox1.ColumnCount = 4
+    .ListBox1.ColumnHeads = True
+    
+    If iRow > 1 Then
+    
+         .ListBox1.RowSource = "Database! A2: C2" & iRow
+         Else
+         
+         .ListBox1.RowSource = "Database! A2: C2"
+         End If
+             
+ 
+ End With
+
+
+===================================================================================================================
+
+=============================================================submit================================================
+
+Sub submit()
+
+ Dim sh As Worksheet
+ 
+ Dim iRow As Long
+ 
+ Set sh = ThisWorkbook.Sheets("Database")
+ 
+ iRow = [Counta(Database!A:A)] + 1
+ 
+ With sh
+ 
+  .Cells(iRow, 1) = iRow - 1
+  
+  .Cells(iRow, 2) = frmForm.txtempname.Value
+   .Cells(iRow, 3) = frmForm.txtempid.Value
+   
+  
+ 
+ End With
+ 
+
+End Sub
+
+
+Sub Show_Form()
+
+  frmForm.Show
+
+End Sub
+
+=======================================================================================================================
+
+
+=========================================================Save Button Code ====================================================
+
+Private Sub btn_Click()
+
+   Dim msgValue As VbMsgBoxResult
+   
+   msgValue = MsgBox(" Do you Want to Save ?", vbYesNo + vbInformation, "confirmation")
+   
+   If msgValue = vbNo Then Exit Sub
+   
+   Call submit
+   
+ 
+End Sub
+
+=========================================================================================================================

@@ -1,0 +1,112 @@
+Sub RangeNext_Example()
+
+ Dim Rng As Range
+ Dim CellAdderess As String
+
+ Set Rng = Range("A2:H12").find(What:="ram")
+ Rng.find What:="ram"
+
+ CellAddress = Rng.Address
+ MsgBox CellAddress
+
+End Sub
+================================================================
+
+Sub RangeNext_Example()
+
+ Dim Rng As Range
+ Dim CellAdderess As String
+ Set Rng = Range("A2:H12").find(What:="ram")
+ Rng.find What:="ram"
+
+ CellAddress = Rng.Address
+ MsgBox CellAddress
+
+ Set Rng = Range("A2:H12").FindNext(Rng)
+ CellAddress = Rng.Address
+ MsgBox CellAddress
+
+End Sub
+=====================================================================
+
+
+
+Sub FindNext_Example()
+
+ Dim FindValue As String
+ FindValue = "ram"
+
+ Dim Rng As Range
+ Set Rng = Range("A2:H12")
+
+ Dim FindRng As Range
+ Set FindRng = Rng.find(What:=FindValue)
+
+ Dim FirstCell As String
+ FirstCell = FindRng.Address
+
+ Do
+  MsgBox FindRng.Address
+  Set FindRng = Rng.FindNext(FindRng)
+  Loop While FirstCell <> FindRng.Address
+
+ MsgBox "Search is over"
+
+End Sub
+
+
+
+============================================================================
+
+
+
+
+
+
+sub sample2()
+
+dim Findd as String
+dim Rng as range
+FindS = InputBox("Enter the value which you want to Search")
+with Sheets("Sheet1").Range("A1:H12")
+   Set Rng = .Find(What:=FindString, After:=Range("A1:H12"))
+   If Not Rng Is Nothing Then
+                                 Application.Goto Rng, True
+                         Else
+                                 MsgBox "Nothing found"
+                          End If
+                          End With
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
