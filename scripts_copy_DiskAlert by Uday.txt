@@ -1,0 +1,66 @@
+#####Disk Alert################
+#!/bin/sh
+
+ip=172.18.0.36
+client=JKFenner_Client
+emailid=JKFenneralerts@msr-it.com
+#emailid=yougandhar.kv@msr-it.com
+semailid=AzureMSRAlerts@msr-it.com
+
+df -Ph | grep -vE '^Filesystem|tmpfs|cdrom|mnt' | awk '{ print $5,$6 }' | while read output;
+do
+  ##echo $output
+  used=$(echo $output | awk '{print $1}' | sed s/%//g)
+  partition=$(echo $output | awk '{print $2}')
+  if [ $used -ge 80 ]; then
+
+  echo "The client name \"$client\" . Partition Name is :-- \"$partition\" belongs to the Hostname is:-- \"$(hostname)\" and IP address:--'$ip'has used $used% at $(date)" | mailx  -s "Critical Disk Space Alert: $used% Used On $(hostname)" -r "$semailid"  -S smtp="mail.msr-it.com:587"  "$emailid"
+
+elif [ $used -ge 90 ]; then
+
+  echo "The client name \"$client\" . Partition Name is :-- \"$partition\" belongs to the Hostname is:-- \"$(hostname)\" and IP address:--'$ip'has used $used% at $(date)" | mailx  -s "Very critical Disk Space Alert: $used% Used On $(hostname) " -r "$semailid"  -S smtp="mail.msr-it.com:587" "$emailid"
+
+  fi
+done
+#############################End#########################################
+
+
+#!/bin/bash
+
+DB_USER="root"
+DB_PASS="Cosmos12#"
+DB_NAME="Backup_Workings"
+
+BACKUP_DIR="/opt/backup"
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+mysqldump --user=$DB_USER --password=$DB_PASS $DB_NAME > $BACKUP_DIR/$DB_NAME-$DATE.sql
+gzip $BACKUP_DIR/$DB_NAME-$DATE.sql
+###################################################################################
+
+
+mysqldump --user=uday --password=Cosmos12# dbname
+
+mysqldump -u [uname] -p db_name > db_backup.sql
+
+mysqldump -u root -p dbname > C:\MySQLBackup\sakila_20200424.sql
+
+#############################################
+
+todaydate=$(date +%F)
+#echo $todaydate
+#yesterday=$(date -d "yesterday 13:00" '+%Y-%m-%d')
+#echo $yesterday
+
+sudo azcopy copy '/sapdb/DDB/backup' 'https://monthly1.blob.core.windows.net/logs15min/'$todaydate'?sp=rw&st=2023-07-04T07:26:10Z&se=2023-07-04T15:26:10Z&sv=2022-11-02&sr=c&sig=frKS%2FBS9LxfHoEC9PuAyiFNupMqCOhWYK%2BfUz0bJQ4Y%3D' --recursive=true >> /tmp/`date +\%Y\%m\%d\%H\%M\%S`_cron.log
+
+sudo azcopy copy '/sapdb/DDB/backup' 'https://monthly1.blob.core.windows.net/udaystg/'$todaydate'/?sp=rw&st=2023-06-27T10:54:33Z&se=2023-06-27T18:54:33Z&sv=2022-11-02&sr=c&sig=icsUytj7eDqMAlqYt%2BM%2BGb84JC4lJcm2wlOOjIKpkBo%3D' --recursive=true >> /tmp/azcop/`date +\%Y\%m\%d\%H\%M\%S`_cron.log
+
+########################################################################
+#Weekly CSP
+
+#todaydate=$(date +%F)
+#echo $todaydate
+yesterday=$(date -d "yesterday 13:00" '+%Y-%m-%d')
+#echo $yesterday
+
+sudo azcopy copy '/sapdb/SDP/backup/*' 'https://prdweeklydbbkp.blob.core.windows.net/weeklycsp/'$yesterday'/?sp=rw&st=2023-07-06T11:28:00Z&se=2026-03-30T19:28:00Z&sv=2022-11-02&sr=c&sig=sWM7kT7dc%2BML3fJ59cVeXHamQI4rJcC5Toa6cH40M3k%3D' --recursive=true >> /tmp/azcop/`date +\%Y\%m\%d\%H\%M\%S`_weeklycron.log

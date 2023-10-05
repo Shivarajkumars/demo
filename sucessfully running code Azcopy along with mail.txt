@@ -1,0 +1,42 @@
+?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-29T13:56:03Z&st=2023-09-29T05:56:03Z&spr=https&sig=qlejEvRWbhA4qvMppaPtqA7yaADCdZ0ab0I25srjyKg%3D
+
+
+
+https://devfile.blob.core.windows.net/conainer
+
+==================================================================================================================================================================================================
+
+
+echo "Enter the Source Name"
+read source
+
+#code=https://devfile.blob.core.windows.net/conainer/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-15T16:03:01Z&st=2023-09-15T08:03:01Z&spr=https&sig=xLcx0voDRZUFhJvLJHgERRbLK9jtyY5kwf6J2KGiyh4%3D
+
+echo "Enter the Container Path"
+read SrcBlobContainer
+
+echo "Enter SAS Token"
+read SrcSASToken
+
+#destination = $SrcBlobContainer/$SrcSASToken
+
+#SrcBlobContainer = https://devfile.blob.core.windows.net/conainer
+#$SrcSASToken = ?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-15T16:03:01Z&st=2023-09-15T08:03:01Z&spr=https&sig=xLcx0voDRZUFhJvLJHgERRbLK9jtyY5kwf6J2KGiyh4%3D
+
+
+azcopy copy "`$source`" "$SrcBlobContainer/$SrcSASToken"  --recursive=true
+
+
+
+#ip=172.30.12.244
+
+#client=Shivaraj
+
+#emailid=shivaraj@msr-it.com
+
+mailx  -s "Copy File Alert" -s smtp="mail.msr-it.com:587"  shivaraj@msr-it.com
+
+
+
+=================================================================================================================================================================================
+

@@ -1,0 +1,40 @@
+=======================================================================================================================================================================================================
+
+Sourcepath = /root/demofile
+
+Destinationpath_containerURL_SASToken =  https://devfile.blob.core.windows.net/conainer/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-14T19:49:50Z&st=2023-09-14T11:49:50Z&spr=https&sig=Lli3LycZ%2Fwtyweuq6jzplHhXQNTDA3PliodUIFlrC%2Bw%3D
+
+azcopy copy $Sourcepath $Destinationpath_containerURL_SASToken --recursive=true
+
+
+
+
+
+ip=172.30.12.244
+client=Shivaraj
+emailid=shivaraj@msr-it.com
+#emailid=yougandhar.kv@msr-it.com
+#semailid=AzureMSRAlerts@msr-it.com
+
+#df -Ph | grep -vE '^Filesystem|tmpfs|cdrom|mnt' | awk '{ print $5,$6 }' | while read output;
+do
+  ##echo $output
+  #used=$(echo $output | awk '{print $1}' | sed s/%//g)
+  #partition=$(echo $output | awk '{print $2}')
+  #if [ $used -ge 80 ]; then
+
+  echo "The client name \"$client\" . Partition Name is :-- \"$partition\" belongs to the Hostname is:-- \"$(hostname)\" and IP address:--'$ip'has used $used% at $(date)" | mailx  -s "Critical Disk Space Alert: $used% Used On $(hostname)" -r "$semailid"  -S smtp="mail.msr-it.com:587"  "$emailid"
+
+#elif [ $used -ge 90 ]; then
+
+#  echo "The client name \"$client\" . Partition Name is :-- \"$partition\" belongs to the Hostname is:-- \"$(hostname)\" and IP address:--'$ip'has used $used% at $(date)" | mailx  -s "Very critical Disk Space Alert: $used% Used On $(hostname) " -r "$semailid"  -S smtp="mail.msr-it.com:587" "$emailid"
+
+#  fi
+done
+
+
+
+
+
+
+=================================================================================================================================================================================================

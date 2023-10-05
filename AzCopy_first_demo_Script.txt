@@ -1,0 +1,18 @@
+Sourcepath = /root/downloadazcopy-v10-linux
+
+Destinationpath_containerURL_SASToken =  https://devfile.blob.core.windows.net/conainer/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-14T21:22:28Z&st=2023-09-14T13:22:28Z&spr=https&sig=KwPxj8jFKZhJIQoJ9Mm%2FCnCwAHirAnZuXeBUs3qDlP0%3D
+
+azcopy copy "$Sourcepath" "$Destinationpath_containerURL_SASToken" --recursive=true
+
+ip=172.30.12.244
+
+client=Shivaraj
+
+emailid=shivaraj@msr-it.com
+
+echo "The client name \"$client\" belongs to the Hostname is:-- \"$(hostname)\" and IP address:--'$ip'has used $used% at $(date)" | mailx  -s "Copy File Alert: $used% Used On $(hostname)" -S smtp="mail.msr-it.com:587"  "$emailid" 
+
+
+#https://devfile.blob.core.windows.net/conainer/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-14T21:22:28Z&st=2023-09-14T13:22:28Z&spr=https&sig=KwPxj8jFKZhJIQoJ9Mm%2FCnCwAHirAnZuXeBUs3qDlP0%3D
+
+#azcopy copy "/root/demofile" "https://devfile.blob.core.windows.net/conainer/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-09-14T19:49:50Z&st=2023-09-14T11:49:50Z&spr=https&sig=Lli3LycZ%2Fwtyweuq6jzplHhXQNTDA3PliodUIFlrC%2Bw%3D" --recursive=true

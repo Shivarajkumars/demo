@@ -1,0 +1,1 @@
+mailx  -s "Copy File Alert" -s smtp="mail.msr-it.com:587"  shivaraj@msr-it.com
