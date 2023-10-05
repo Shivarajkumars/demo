@@ -1,0 +1,394 @@
+root@ubuntu20:~# ls
+AzCopy_Script.sh  azcopy         azcopy_linux_amd64_10.20.1         azcopy_v10         azcopy_v7         dead.letter               email.txt      enpy.sh     mail.sh
+NOTICE.txt        azcopy.tar.gz  azcopy_linux_amd64_10.20.1.tar.gz  azcopy_v10.tar.gz  azcopy_v7.tar.gz  downloadazcopy-v10-linux  email.txt.gpg  install.sh  snap
+
+
+root@ubuntu20:~# fdisk -l | grep sd
+Disk /dev/sdb: 16 GiB, 17179869184 bytes, 33554432 sectors
+/dev/sdb1        2048 33552383 33550336  16G  7 HPFS/NTFS/exFAT
+Disk /dev/sda: 30 GiB, 32213303296 bytes, 62916608 sectors
+/dev/sda1  227328 62916574 62689247 29.9G Linux filesystem
+/dev/sda14   2048    10239     8192    4M BIOS boot
+/dev/sda15  10240   227327   217088  106M EFI System
+Disk /dev/sdc: 10 GiB, 10737418240 bytes, 20971520 sectors
+Disk /dev/sdd: 4 GiB, 4294967296 bytes, 8388608 sectors
+
+
+
+root@ubuntu20:~# pvcreate /dev/sdc
+  Physical volume "/dev/sdc" successfully created.
+
+
+root@ubuntu20:~# vgcreate vg01 /dev/sdc
+  Volume group "vg01" successfully created
+
+
+root@ubuntu20:~# lvcreate -l +100%FREE -n lv01 vg01 /dev/sdc
+  Logical volume "lv01" created.
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-a----- <10.00g
+
+root@ubuntu20:~# mkf
+mkfifo       mkfs         mkfs.bfs     mkfs.btrfs   mkfs.cramfs  mkfs.ext2    mkfs.ext3    mkfs.ext4    mkfs.fat     mkfs.minix   mkfs.msdos   mkfs.ntfs    mkfs.vfat    mkfs.xfs
+
+root@ubuntu20:~# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0         7:0    0 63.5M  1 loop /snap/core20/2015
+loop1         7:1    0 91.9M  1 loop /snap/lxd/24061
+loop2         7:2    0 40.9M  1 loop /snap/snapd/20092
+loop3         7:3    0 40.9M  1 loop /snap/snapd/19993
+sda           8:0    0   30G  0 disk
+├─sda1        8:1    0 29.9G  0 part /
+├─sda14       8:14   0    4M  0 part
+└─sda15       8:15   0  106M  0 part /boot/efi
+sdb           8:16   0   16G  0 disk
+└─sdb1        8:17   0   16G  0 part /mnt
+sdc           8:32   0   10G  0 disk
+└─vg01-lv01 253:0    0   10G  0 lvm
+sdd           8:48   0    4G  0 disk
+
+
+root@ubuntu20:~# blkid
+/dev/sdb1: UUID="2c844368-6633-436a-8f42-cc73369a8741" TYPE="ext4" PARTUUID="6fe15c82-01"
+/dev/sda1: LABEL="cloudimg-rootfs" UUID="b2a57135-5eea-4019-a338-57f5d9232279" TYPE="ext4" PARTUUID="c1e71e77-08eb-480f-b49d-6919c188db0a"
+/dev/sda15: LABEL_FATBOOT="UEFI" LABEL="UEFI" UUID="941B-E657" TYPE="vfat" PARTUUID="cd503db9-2eb3-424b-ba51-7e89c1cdfed3"
+/dev/loop0: TYPE="squashfs"
+/dev/loop1: TYPE="squashfs"
+/dev/loop2: TYPE="squashfs"
+/dev/loop3: TYPE="squashfs"
+/dev/sda14: PARTUUID="9d2dd6e9-d50b-4a18-910b-83c9d994f72a"
+/dev/sdc: UUID="JtMXhI-ZbBw-1Jix-Ze8Y-U6ur-kTYy-wX8Qcr" TYPE="LVM2_member"
+
+
+root@ubuntu20:~# mkfs.xfs /dev/vg01/lv01
+meta-data=/dev/vg01/lv01         isize=512    agcount=4, agsize=655104 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=2620416, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+root@ubuntu20:~# mkdir -p /mnt/test
+
+
+root@ubuntu20:~# blkid
+/dev/sdb1: UUID="2c844368-6633-436a-8f42-cc73369a8741" TYPE="ext4" PARTUUID="6fe15c82-01"
+/dev/sda1: LABEL="cloudimg-rootfs" UUID="b2a57135-5eea-4019-a338-57f5d9232279" TYPE="ext4" PARTUUID="c1e71e77-08eb-480f-b49d-6919c188db0a"
+/dev/sda15: LABEL_FATBOOT="UEFI" LABEL="UEFI" UUID="941B-E657" TYPE="vfat" PARTUUID="cd503db9-2eb3-424b-ba51-7e89c1cdfed3"
+/dev/loop0: TYPE="squashfs"
+/dev/loop1: TYPE="squashfs"
+/dev/loop2: TYPE="squashfs"
+/dev/loop3: TYPE="squashfs"
+/dev/sdc: UUID="JtMXhI-ZbBw-1Jix-Ze8Y-U6ur-kTYy-wX8Qcr" TYPE="LVM2_member"
+/dev/sda14: PARTUUID="9d2dd6e9-d50b-4a18-910b-83c9d994f72a"
+/dev/mapper/vg01-lv01: UUID="5b8b9c36-4000-4700-afdb-73c4b6e3973b" TYPE="xfs"
+
+
+root@ubuntu20:~# vi /etc/fstab
+
+
+root@ubuntu20:~# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        29G  3.4G   26G  12% /
+devtmpfs        3.9G     0  3.9G   0% /dev
+tmpfs           3.9G     0  3.9G   0% /dev/shm
+tmpfs           789M 1004K  788M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0       64M   64M     0 100% /snap/core20/2015
+/dev/loop1       92M   92M     0 100% /snap/lxd/24061
+/dev/loop3       41M   41M     0 100% /snap/snapd/19993
+/dev/loop2       41M   41M     0 100% /snap/snapd/20092
+/dev/sda15      105M  6.1M   99M   6% /boot/efi
+/dev/sdb1        16G   32K   15G   1% /mnt
+tmpfs           789M     0  789M   0% /run/user/1000
+
+
+root@ubuntu20:~# mount -a
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1004K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   10G  104M  9.9G   2% /mnt/test
+
+root@ubuntu20:~# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0         7:0    0 63.5M  1 loop /snap/core20/2015
+loop1         7:1    0 91.9M  1 loop /snap/lxd/24061
+loop2         7:2    0 40.9M  1 loop /snap/snapd/20092
+loop3         7:3    0 40.9M  1 loop /snap/snapd/19993
+sda           8:0    0   30G  0 disk
+├─sda1        8:1    0 29.9G  0 part /
+├─sda14       8:14   0    4M  0 part
+└─sda15       8:15   0  106M  0 part /boot/efi
+sdb           8:16   0   16G  0 disk
+└─sdb1        8:17   0   16G  0 part /mnt
+sdc           8:32   0   10G  0 disk
+└─vg01-lv01 253:0    0   10G  0 lvm  /mnt/test
+sdd           8:48   0    4G  0 disk
+
+root@ubuntu20:~# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sdc   vg01 lvm2 a--  <10.00g    0
+
+
+root@ubuntu20:~# vgs
+  VG   #PV #LV #SN Attr   VSize   VFree
+  vg01   1   1   0 wz--n- <10.00g    0
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-ao---- <10.00g
+
+
+root@ubuntu20:~# pvcreate /dev/sdd
+  Physical volume "/dev/sdd" successfully created.
+
+
+root@ubuntu20:~# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sdc   vg01 lvm2 a--  <10.00g    0
+  /dev/sdd        lvm2 ---    4.00g 4.00g
+
+
+root@ubuntu20:~# vgcreate vg01 /dev/sdd
+  /dev/vg01: already exists in filesystem
+  Run `vgcreate --help' for more information.
+
+root@ubuntu20:~# vgextend vg01 /dev/sdd
+  Volume group "vg01" successfully extended
+
+
+root@ubuntu20:~# vgs
+  VG   #PV #LV #SN Attr   VSize  VFree
+  vg01   2   1   0 wz--n- 13.99g <4.00g
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-ao---- <10.00g
+
+
+root@ubuntu20:~# lvextend -l +100%FREE /dev/mapper/vg01-lv01
+  Size of logical volume vg01/lv01 changed from <10.00 GiB (2559 extents) to 13.99 GiB (3582 extents).
+  Logical volume vg01/lv01 successfully resized.
+
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1004K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   10G  104M  9.9G   2% /mnt/test
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-ao---- 13.99g
+
+
+root@ubuntu20:~# xfs_growfs /dev/mapper/vg01-lv01
+meta-data=/dev/mapper/vg01-lv01  isize=512    agcount=4, agsize=655104 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=2620416, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 2620416 to 3667968
+
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1004K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   14G  133M   14G   1% /mnt/test
+
+
+root@ubuntu20:~#
+=========================================================================================================================================================================================
+HERE AGAIN 4G NEW DISK ATTACHED
+
+=========================================================================================================================================================================================
+
+root@ubuntu20:~# fdisk -l | grep sd
+Disk /dev/sdb: 16 GiB, 17179869184 bytes, 33554432 sectors
+/dev/sdb1        2048 33552383 33550336  16G  7 HPFS/NTFS/exFAT
+Disk /dev/sda: 30 GiB, 32213303296 bytes, 62916608 sectors
+/dev/sda1  227328 62916574 62689247 29.9G Linux filesystem
+/dev/sda14   2048    10239     8192    4M BIOS boot
+/dev/sda15  10240   227327   217088  106M EFI System
+Disk /dev/sdc: 10 GiB, 10737418240 bytes, 20971520 sectors
+Disk /dev/sdd: 4 GiB, 4294967296 bytes, 8388608 sectors
+Disk /dev/sde: 4 GiB, 4294967296 bytes, 8388608 sectors
+
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1008K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   14G  133M   14G   1% /mnt/test
+
+
+root@ubuntu20:~# pvcreate /dev/sde
+  Physical volume "/dev/sde" successfully created.
+
+
+root@ubuntu20:~# vgex
+vgexport  vgextend
+
+root@ubuntu20:~# vgextend vg01 /dev/sde
+  Volume group "vg01" successfully extended
+
+root@ubuntu20:~# lvextend -L +2G /dev/mapper/vg01-lv01
+  Size of logical volume vg01/lv01 changed from 13.99 GiB (3582 extents) to 15.99 GiB (4094 extents).
+  Logical volume vg01/lv01 successfully resized.
+
+
+root@ubuntu20:~# xfs_growfs /dev/mapper/vg01-lv01
+meta-data=/dev/mapper/vg01-lv01  isize=512    agcount=6, agsize=655104 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=3667968, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 3667968 to 4192256
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-ao---- 15.99g
+
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1008K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   16G  147M   16G   1% /mnt/test
+
+
+root@ubuntu20:~# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sdc   vg01 lvm2 a--  <10.00g     0
+  /dev/sdd   vg01 lvm2 a--   <4.00g     0
+  /dev/sde   vg01 lvm2 a--   <4.00g <2.00g
+
+
+root@ubuntu20:~# vgextend vg01 /dev/sde
+  Physical volume '/dev/sde' is already in volume group 'vg01'
+  Unable to add physical volume '/dev/sde' to volume group 'vg01'
+  /dev/sde: physical volume not initialized.
+
+
+root@ubuntu20:~# lvextend -l +100%FREE /dev/mapper/vg01-lv01
+  Size of logical volume vg01/lv01 changed from 15.99 GiB (4094 extents) to <17.99 GiB (4605 extents).
+  Logical volume vg01/lv01 successfully resized.
+
+
+root@ubuntu20:~# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv01 vg01 -wi-ao---- <17.99g
+
+
+root@ubuntu20:~# xfs_growfs /dev/mapper/vg01-lv01
+meta-data=/dev/mapper/vg01-lv01  isize=512    agcount=7, agsize=655104 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=4192256, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 4192256 to 4715520
+
+
+root@ubuntu20:~# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/root               29G  3.4G   26G  12% /
+devtmpfs               3.9G     0  3.9G   0% /dev
+tmpfs                  3.9G     0  3.9G   0% /dev/shm
+tmpfs                  789M 1008K  788M   1% /run
+tmpfs                  5.0M     0  5.0M   0% /run/lock
+tmpfs                  3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/loop0              64M   64M     0 100% /snap/core20/2015
+/dev/loop1              92M   92M     0 100% /snap/lxd/24061
+/dev/loop3              41M   41M     0 100% /snap/snapd/19993
+/dev/loop2              41M   41M     0 100% /snap/snapd/20092
+/dev/sda15             105M  6.1M   99M   6% /boot/efi
+/dev/sdb1               16G   32K   15G   1% /mnt
+tmpfs                  789M     0  789M   0% /run/user/1000
+/dev/mapper/vg01-lv01   18G  161M   18G   1% /mnt/test
+
+root@ubuntu20:~#
